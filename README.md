@@ -2,6 +2,8 @@
 
 **Bridging the gap between the air-conditioned admin office and the hostel room on the top floor.**
 
+**Live demo:** https://oojlang3o4heryy6aq2huaeux40hdfuk.lambda-url.ap-south-1.on.aws/
+
 Environmental Hacks (Bharat Builds Tour) · Track: Heat and Water · Solo build
 
 ## The problem
@@ -29,7 +31,7 @@ The whole app (dashboard and API) runs on **AWS Lambda behind a Lambda Function 
 - `core.py`: weather fetch, WBGT, room/path models, water simulation, action engine.
 - `api.py`: request routing shared by Lambda and the local server.
 - `lambda_function.py`: Lambda entry point.
-- `server.py`: local dev server (`python3 server.py`, then open http://localhost:8000).
+- `server.py`: local dev server (`python3 server.py`, then open `localhost:8000` in a browser).
 - `web/index.html`: dashboard (vanilla JS, no build step).
 - `build_zip.sh`: builds the Lambda deployment package.
 
