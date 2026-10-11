@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampusShield</title>
+<style>
+:root{--tx:#eef2f7;--mut:#9aa8b8;--line:rgba(255,255,255,.09);--glass:rgba(255,255,255,.055);
+--safe:#3fcf9b;--caution:#f0c75e;--danger:#f58a46;--extreme:#ef4b52;--ac:#6bb6f2}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font:15px/1.5 system-ui,-apple-system,"SF Pro Display",Segoe UI,sans-serif;min-height:100vh;
+background:radial-gradient(900px 500px at 20% -10%,#26384f 0%,transparent 60%),radial-gradient(800px 500px at 100% 10%,#3a2530 0%,transparent 55%),#0b1017;background-attachment:fixed}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:26px;padding:20px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.brand{font-size:20px;font-weight:700;letter-spacing:.3px}.brand span{color:var(--extreme)}
+.search{position:relative;flex:1;min-width:240px}
+.search input{width:100%;padding:12px 18px 12px 42px;border-radius:99px;border:1px solid var(--line);background:var(--glass);color:var(--tx);font:inherit;backdrop-filter:blur(18px);outline:none}
+.search svg{position:absolute;left:15px;top:13px;width:18px;height:18px;opacity:.6}
+.results{position:absolute;z-index:9;left:0;right:0;top:50px;background:#161e29;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.results div{padding:11px 16px;cursor:pointer;font-size:13.5px;border-bottom:1px solid var(--line)}.results div:hover{background:#202c3a}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;background:var(--glass)}
+.seg button{background:none;border:0;color:var(--mut);padding:9px 16px;cursor:pointer;font:inherit}
+.seg button.on{background:rgba(255,255,255,.14);color:var(--tx);font-weight:600}
+.grid{display:grid;gap:16px}.grid>*{min-width:0}html,body{overflow-x:hidden}.where{overflow-wrap:anywhere}.main{grid-template-columns:1.7fr 1fr}.g2{grid-template-columns:1fr 1fr}
+@media(max-width:860px){.main,.g2{grid-template-columns:1fr}}
+h2{margin:0 0 6px;font-size:12.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut);font-weight:600}
+.where{font-size:17px;font-weight:600}.date{color:var(--mut);font-size:14px}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px}
+.temp{font-size:104px;font-weight:200;line-height:1;letter-spacing:-3px}.temp sup{font-size:40px;font-weight:300;vertical-align:top;position:relative;top:10px}
+.lvl{display:inline-block;padding:3px 12px;border-radius:99px;font-size:13px;font-weight:700;color:#10161c}
+.safe{background:var(--safe)}.caution{background:var(--caution)}.danger{background:var(--danger)}.extreme{background:var(--extreme);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;border-top:1px solid var(--line);margin-top:18px;padding-top:14px}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.temp{font-size:76px}}
+.stats small{display:block;color:var(--mut);font-size:12.5px}.stats b{font-size:20px;font-weight:600}
+.ico{width:150px;height:150px;flex:none}@media(max-width:600px){.ico{width:90px;height:90px}.row{grid-template-columns:110px 1fr 48px}}
+.days{display:grid;gap:4px}
+.dc{display:grid;grid-template-columns:78px 14px 1fr auto;gap:10px;align-items:center;padding:9px 10px;border-radius:14px;cursor:pointer;border:1px solid transparent}
+.dc:hover{background:rgba(255,255,255,.05)}.dc.sel{background:rgba(255,255,255,.11);border-color:var(--line)}
+.dc i{width:12px;height:12px;border-radius:50%;display:block}.dc .n{font-weight:700;text-align:right}.dc small{color:var(--mut)}
+.hours{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px}
+.hp{flex:none;width:74px;border-radius:22px;padding:12px 6px;text-align:center;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.hp.sel{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3)}
+.hp small{color:var(--mut);font-size:12px;display:block}.hp b{font-size:20px;font-weight:600;display:block;margin:8px 0 6px}
+.hp i{display:block;height:6px;border-radius:99px;margin:0 10px}
+.gap{display:grid;gap:12px;margin-top:10px}
+.row{display:grid;grid-template-columns:150px 1fr 54px;gap:10px;align-items:center;font-size:14px}
+.bar{height:14px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}.bar i{display:block;height:100%;border-radius:99px}
+.num{text-align:right;font-weight:700}
+.note{color:var(--mut);font-size:12.5px;margin-top:10px}
+.act{border-left:4px solid var(--line);padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.045);margin-top:10px}
+.act.critical{border-color:var(--extreme)}.act.high{border-color:var(--danger)}.act.medium{border-color:var(--caution)}.act.ok{border-color:var(--safe)}
+.act b{display:block;font-size:15.5px}.act .why{color:var(--mut);margin:2px 0 6px;font-size:13.5px}
+.brief{border:1px dashed var(--ac);border-radius:14px;padding:12px;margin-top:10px;color:#cfe6fa}
+.ctrl{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--mut);margin-top:8px}
+.ctrl input{width:96px;background:rgba(0,0,0,.25);color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:5px 8px}
+.clock{font-size:28px;font-weight:600}
+button.pri{background:var(--ac);color:#0b1017;border:0;border-radius:99px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;margin-top:12px}
+textarea{width:100%;height:150px;margin-top:8px;background:rgba(0,0,0,.3);color:var(--tx);border:1px solid var(--line);border-radius:14px;padding:10px;font:13px/1.4 inherit}
+svg.chart{width:100%;height:auto;display:block}
+footer{margin-top:26px;color:var(--mut);font-size:12px}footer a{color:var(--ac)}
+.err{color:var(--extreme)}
+</style>
+</head>
+<body><div class="wrap">
+<div class="top">
+  <div class="brand">Campus<span>Shield</span></div>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" placeholder="Search your campus: VIT Bhopal, IIT Delhi, BITS Pilani…" autocomplete="off"><div id="res" class="results" hidden></div></div>
+  <div class="seg" id="mode"><button data-m="live" class="on">Live</button><button data-m="replay">Replay May 2024</button></div>
+</div>
+<div id="out" class="grid"><div class="glass">Loading real weather data…</div></div>
+<footer>Weather: <a href="https://open-meteo.com">Open-Meteo.com</a> (CC BY 4.0). Place search: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Room, path and water figures are modelled estimates, not sensor readings.</footer>
+</div>
+<script>
+const LV={safe:"Safe",caution:"Caution",danger:"Danger",extreme:"Life-threatening"};
+const COL={safe:"#3fcf9b",caution:"#f0c75e",danger:"#f58a46",extreme:"#ef4b52"};
+const fmt=h=>`${h%12||12} ${h<12?"AM":"PM"}`;
+let mode="live", day=0;
+let place={name:"VIT Bhopal",lat:23.0755,lon:76.8498}, campus={students:4000,tank_litres:600000};
+try{const sv=JSON.parse(localStorage.getItem("cs")||"null");if(sv){place=sv.place||place;campus=sv.campus||campus}}catch(e){}
+const save=()=>{try{localStorage.setItem("cs",JSON.stringify({place,campus}))}catch(e){}};
+
+document.querySelectorAll("#mode button").forEach(b=>b.onclick=()=>{
+  mode=b.dataset.m;day=0;document.querySelectorAll("#mode button").forEach(x=>x.classList.toggle("on",x===b));load();});
+
+const qi=document.getElementById("q"),res=document.getElementById("res");let tm;
+qi.oninput=()=>{clearTimeout(tm);const v=qi.value.trim();if(v.length<3){res.hidden=true;return}
+  tm=setTimeout(async()=>{try{const r=await (await fetch("/api/search?q="+encodeURIComponent(v))).json();
+    res.innerHTML=r.length?r.map((p,i)=>`<div data-i="${i}">${p.name}</div>`).join(""):"<div>No match. Try adding the city.</div>";res.hidden=false;
+    res.querySelectorAll("div[data-i]").forEach(el=>el.onclick=()=>{const p=r[+el.dataset.i];
+      place={name:p.name.split(",")[0],lat:p.lat,lon:p.lon};day=0;save();res.hidden=true;qi.value="";load();});
+  }catch(e){res.innerHTML="<div>Search failed</div>";res.hidden=false}},400)};
+
+async function load(){
+  const out=document.getElementById("out");
+  const q=new URLSearchParams({students:campus.students,tank_litres:campus.tank_litres,lat:place.lat,lon:place.lon,name:place.name,day});
+  if(mode==="replay")q.set("date","2024-05-26");
+  try{
+    const r=await fetch("/api/report?"+q);const d=await r.json();
+    if(d.error)throw new Error(d.error);render(d);
+  }catch(e){out.innerHTML=`<div class="glass err">Could not load data: ${e.message}</div>`}
+}
+
+const dayName=l=>new Date(l+"T00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});
+function advisory(d){
+  const A=d.actions.map((a,i)=>`${i+1}. ${a.title}\n   ${a.do}`).join("\n");
+  return `HEAT & WATER ADVISORY – ${d.place.name}\nDate: ${dayName(d.date)}\nPeak air temperature ${d.summary.peak_temp}°C; heat-stress index (WBGT) ${d.summary.peak_wbgt}°C – ${LV[d.summary.peak_level]}.\n\nACTIONS:\n${A}\n\nStay hydrated. Avoid outdoor activity in peak hours. Report any heat illness to the warden immediately.`;
+}
+
+function icon(level,night,loo){
+  const c=COL[level];
+  if(night)return `<svg class="ico" viewBox="0 0 120 120"><path d="M80 18a42 42 0 1 0 22 70A48 48 0 0 1 80 18z" fill="#cfd8e6"/></svg>`;
+  const rays=[...Array(12)].map((_,i)=>`<rect x="58" y="6" width="4" height="14" rx="2" fill="${c}" transform="rotate(${i*30} 60 60)" opacity=".85"/>`).join("");
+  return `<svg class="ico" viewBox="0 0 120 120"><defs><radialGradient id="g" cx="40%" cy="35%"><stop offset="0" stop-color="#fff4c2"/><stop offset="1" stop-color="${c}"/></radialGradient></defs>
+  <circle cx="60" cy="60" r="44" fill="${c}" opacity=".18"/>${rays}<circle cx="60" cy="60" r="27" fill="url(#g)"/>
+  ${loo?'<path d="M10 100h50M30 110h60M62 92h40" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>':""}</svg>`;
+}
+
+function render(d){
+  const H=d.hours,S=d.summary,W=d.water;
+  const live0=d.mode==="live"&&d.day===0;
+  const nowH=live0?new Date().getHours():S.peak_hour;
+  const cur=H[nowH];
+  const gap=[["Admin office (AC)",22,"#6bb6f2"],["Outside air",S.peak_temp,"#f0c75e"],["Top-floor hostel room",S.peak_room,"#f58a46"],["Walking path, unshaded",S.peak_corridor,"#ef4b52"]];
+  const mx=55;
+  document.getElementById("out").innerHTML=`
+  <div class="grid main">
+    <div class="glass">
+      <div class="where">${d.place.name}</div><div class="date">${dayName(d.date)} · ${live0?"now":"worst hour"}, ${fmt(nowH)}</div>
+      <div class="hero">
+        <div><div class="temp">${Math.round(cur.t)}<sup>°C</sup></div>
+          <span class="lvl ${cur.level}">${LV[cur.level]}</span>${cur.loo?' <span class="lvl extreme">Loo wind</span>':""}</div>
+        ${icon(cur.level,live0&&(nowH<6||nowH>=19),cur.loo)}
+      </div>
+      <div class="stats">
+        <div><small>Feels on the path</small><b>${Math.round(cur.corridor)}°</b></div>
+        <div><small>Heat stress (WBGT)</small><b>${cur.wbgt}°</b></div>
+        <div><small>Humidity</small><b>${cur.rh}%</b></div>
+        <div><small>Wind</small><b>${cur.wind} km/h</b></div>
+      </div>
+      <p class="note">WBGT blends heat, humidity and sun: the number that decides heatstroke risk, not the weather-app temperature.</p>
+    </div>
+    <div class="glass"><h2>${d.mode==="live"?"7-day outlook · tap a day":"Replay day"}</h2>
+      <div class="days">${d.outlook.map((o,i)=>`<div class="dc${i===d.day?" sel":""}" data-d="${i}"><span>${dayName(o.date)}</span><i style="background:${COL[o.level]}"></i><small>${LV[o.level]}${o.loo?" · loo":""}</small><span class="n">${Math.round(o.peak_temp)}°</span></div>`).join("")}</div>
+    </div>
+  </div>
+
+  <div class="glass"><h2>Hour by hour</h2>
+    <div class="hours">${H.map(h=>`<div class="hp${h.hour===nowH?" sel":""}"><small>${fmt(h.hour)}</small><b>${Math.round(h.t)}°</b><i style="background:${COL[h.level]}"></i><small style="margin-top:6px">WBGT ${Math.round(h.wbgt)}</small></div>`).join("")}</div>
+  </div>
+
+  <div class="grid g2">
+    <div class="glass"><h2>The reality gap · ${dayName(d.date)} peak</h2>
+      <div class="gap">${gap.map(g=>`<div class="row"><span>${g[0]}</span><div class="bar"><i style="width:${g[1]/mx*100}%;background:${g[2]}"></i></div><span class="num">${Math.round(g[1])}°C</span></div>`).join("")}</div>
+      <p class="note">Room and path values are modelled estimates from real weather: roofs store heat, concrete radiates it. AC office assumed 22°C.</p>
+    </div>
+    <div class="glass"><h2>Water depletion clock</h2>
+      ${W.dry_hour!==null?`<div class="clock" style="color:var(--extreme)">Tanks empty at ${fmt(W.dry_hour)}</div>`:`<div class="clock" style="color:var(--safe)">Tanks hold through the day</div>`}
+      ${waterChart(W.series,W.dry_hour)}
+      <p class="note" style="margin-top:2px">Daily deficit ${W.deficit_litres.toLocaleString()} L (about ${W.tankers_needed} tankers). Usage rises up to 55% in extreme heat. Simulated from the inputs below, not live sensors.</p>
+      <div class="ctrl"><label>Hostel students <input id="stu" type="number" value="${d.campus.students}"></label>
+        <label>Tank capacity (L) <input id="tank" type="number" value="${d.campus.tank_litres}"></label></div>
+    </div>
+  </div>
+
+  <div class="glass"><h2>What to do · ${dayName(d.date)}</h2>
+    ${d.briefing?`<div class="brief">${d.briefing}</div>`:""}
+    ${d.actions.map(a=>`<div class="act ${a.sev}"><b>${a.title}</b><div class="why">${a.why}</div><div>${a.do}</div></div>`).join("")}
+    <button class="pri" id="adv">Generate notice for wardens and students</button>
+    <textarea id="advt" hidden readonly></textarea>
+  </div>`;
+  document.querySelectorAll(".dc").forEach(el=>el.onclick=()=>{day=+el.dataset.d;load()});
+  document.getElementById("adv").onclick=()=>{const t=document.getElementById("advt");t.value=advisory(d);t.hidden=false;t.select();
+    try{navigator.clipboard.writeText(t.value)}catch(e){}};
+  ["stu","tank"].forEach(id=>document.getElementById(id).onchange=e=>{
+    campus[id==="stu"?"students":"tank_litres"]=+e.target.value;save();load();});
+  const hr=document.querySelector(".hours"),hs=hr.querySelector(".sel");if(hs)hr.scrollLeft=hs.offsetLeft-hr.clientWidth/2+hs.clientWidth/2;
+}
+
+function waterChart(s,dry){
+  const w=520,h=150,p=26;
+  const x=i=>p+i*(w-2*p)/23,y=v=>h-p-(v/100)*(h-2*p);
+  const pts=s.map((r,i)=>`${x(i)},${y(r.pct)}`).join(" ");
+  const area=`${x(0)},${y(0)} ${pts} ${x(23)},${y(0)}`;
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}">
+   <line x1="${p}" y1="${y(5)}" x2="${w-p}" y2="${y(5)}" stroke="#ef4b52" stroke-dasharray="4 4"/>
+   <text x="${p}" y="${y(5)-4}" fill="#ef4b52" font-size="10">empty threshold</text>
+   <polygon points="${area}" fill="#6bb6f233"/><polyline points="${pts}" fill="none" stroke="#6bb6f2" stroke-width="2.5"/>
+   ${dry!==null?`<circle cx="${x(dry)}" cy="${y(s[dry].pct)}" r="5" fill="#ef4b52"/>`:""}
+   ${[0,6,12,18,23].map(i=>`<text x="${x(i)}" y="${h-6}" fill="#9aa8b8" font-size="10" text-anchor="middle">${i}h</text>`).join("")}
+   <text x="4" y="${y(100)+4}" fill="#9aa8b8" font-size="10">100%</text></svg>`;
+}
+load();
+</script></body></html>
